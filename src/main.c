@@ -184,43 +184,41 @@ int main(int argc, char* argv[])
     int new_output_len = strlen(input_path) + strlen("-xxcrypted");
     char new_output_path[new_output_len];
 
-    // Get the string of input before and after the .
-    int extension_index;
-    for(extension_index = 0; extension_index < strlen(input_path); extension_index++)
-    {
-        if(input_path[extension_index] == '.')
-        {
-            break;
-        }
-    }
-    char input_name_str[extension_index];
-    strncpy(input_name_str, input_path, extension_index);
-    char input_name_ext[strlen(input_path) - extension_index];
-    strcpy(input_name_ext, &input_path[extension_index]);
-    char *input_name = input_name_str;
-    char *input_ext = input_name_ext;
-
     if(output_path == NULL)
     {
-        strcpy(new_output_path, input_name);
-        if(encrypt_flag)
+        // Get the string of input before and after the .
+        int extension_index;
+        for(extension_index = 0; extension_index < strlen(input_path); extension_index++)
         {
-            strcat(new_output_path, "-encrypted");
-        }
-        else{
-            strcat(new_output_path, "-decrypted");
-        }
-        if(input_ext != NULL)
-        {
-            strcat(new_output_path, input_ext);
+            if(input_path[extension_index] == '.')
+            {
+                break;
+            }
         }
 
+        // Copy in input_path name portion
+        strncpy(new_output_path, input_path, extension_index);
+        // Copy in post-fix
+        char output_postfix[strlen("-xxcrypted") + 1];
+        if(encrypt_flag)
+        {
+            strcpy(output_postfix, "-encrypted");
+        }
+        else{
+            strcpy(output_postfix, "-decrypted");
+        }
+        strcpy(&new_output_path[extension_index], output_postfix);
+        // Copy in extension, if exists
+        if(extension_index != strlen(input_path))
+        {
+            strcpy(&new_output_path[extension_index + strlen("-xxcrypted")], &input_path[extension_index]);
+        }
         output_path = new_output_path;
     }
 
     // Debug prints
-    printf("input: %s\noutput: %s\nkey: %s\nencrypt: %d\ndecrypt: %d\n", input_path, output_path, key_path, encrypt_flag, decrypt_flag);
-    printf("force: %d\nquiet: %d\nverbose: %d\n", force_flag, quiet_flag, verbose_flag);
+    //printf("input: %s\noutput: %s\nkey: %s\nencrypt: %d\ndecrypt: %d\n", input_path, output_path, key_path, encrypt_flag, decrypt_flag);
+    //printf("force: %d\nquiet: %d\nverbose: %d\n", force_flag, quiet_flag, verbose_flag);
 
     // Validate existence of relevant files
     FILE *input_fp = fopen(input_path, "r");
@@ -242,6 +240,8 @@ int main(int argc, char* argv[])
         printf("Key file %s does not exist.\n", key_path);
         return 0;
     }
+
+    printf("output path: %s\n", output_path);
 
     FILE *output_fp = fopen(output_path, "r");
     if(output_fp != NULL)
