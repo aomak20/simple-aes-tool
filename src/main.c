@@ -133,7 +133,8 @@ int main(int argc, char* argv[])
         {
             quiet_flag = true;
         }
-        else{
+        else
+        {
             int err_msg_len = strlen("Unexpected flag \"") + strlen(argv[i]) + 2;
             char err_msg[err_msg_len];
             strcpy(err_msg, "Unexpected flag \"");
@@ -208,7 +209,8 @@ int main(int argc, char* argv[])
         {
             strcpy(output_postfix, ENCRYPT_POSTFIX);
         }
-        else{
+        else
+        {
             strcpy(output_postfix, DECRYPT_POSTFIX);
         }
         strcpy(&new_output_path[extension_index], output_postfix);
@@ -230,7 +232,8 @@ int main(int argc, char* argv[])
     {
         fclose(input_fp);
     }
-    else{
+    else
+    {
         //printf("Input file %s does not exist.\n", input_path);
         err_code = ERR_FILE_NOT_OPEN;
         aes_print_err(err_code);
@@ -242,7 +245,8 @@ int main(int argc, char* argv[])
     {
         fclose(key_fp);
     }
-    else{
+    else
+    {
         //printf("Key file %s does not exist.\n", key_path);
         err_code = ERR_FILE_NOT_OPEN;
         aes_print_err(err_code);
