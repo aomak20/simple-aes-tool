@@ -1,6 +1,6 @@
-// File:    aes.c
+// File:    aes.h
 // Author:  Andrei Makarov
-// Desc:    The big AES file
+// Desc:    The big AES file header
 // //
 
 #ifndef AES_HEADER
