@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "aes.h"
+
 // Constants
 const char *DECRYPT_POSTFIX = "-decrypted";
 const char *ENCRYPT_POSTFIX = "-encrypted";
@@ -282,6 +284,7 @@ int main(int argc, char* argv[])
     // By this point, confirmed that all relevant files are readable/writable
     
     //TODO: now, send input, output, and key file paths to some AES function where it can handle opening files, determining round count, etc.
-
+    do_aes_ecb(input_path, output_path, key_path);
+    
     return 0;
 }
