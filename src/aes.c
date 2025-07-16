@@ -38,14 +38,15 @@ void do_aes_ecb(char *input_path, char *output_path, char *key_path)
 {
     printf("Doing AES process in ECB mode with..\nInput: %s\nOutput: %s\nKey: %s\n", input_path, output_path, key_path);
     int round_count = find_round_count(key_path);
+    //TODO remember how to do better error handling in C
     switch(round_count)
     {
         case -1:
             //TODO replace this with print_error call, involves moving print_error to a util.h file
             printf("ERROR key length must be 128/192/256 bits\n");
-            return -1;
+            break;
         case -2:
-            return -1;
+            break;
     }
     printf("Round count: %d\n", round_count);
 }
