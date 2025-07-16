@@ -17,7 +17,7 @@ const int POSTFIX_LENGTH = strlen("-xxcrypted");
 
 void print_help()
 {
-    printf("For detailed usage, use -h or --help\n");
+    fprintf(stderr, "For detailed usage, use -h or --help\n");
 }
 
 void print_usage()
