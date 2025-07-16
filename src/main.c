@@ -7,6 +7,11 @@
 #include <stdio.h>
 #include <string.h>
 
+// Constants
+const char *DECRYPT_POSTFIX = "-decrypted";
+const char *ENCRYPT_POSTFIX = "-encrypted";
+const int POSTFIX_LENGTH = strlen("-xxcrypted");
+
 void print_help()
 {
     printf("For detailed usage, use -h or --help\n");
@@ -181,7 +186,7 @@ int main(int argc, char* argv[])
     }
 
     // Allocate string for a possible newly constructed output_path
-    int new_output_len = strlen(input_path) + strlen("-xxcrypted");
+    int new_output_len = strlen(input_path) + POSTFIX_LENGTH;
     char new_output_path[new_output_len];
 
     if(output_path == NULL)
@@ -199,19 +204,19 @@ int main(int argc, char* argv[])
         // Copy in input_path name portion
         strncpy(new_output_path, input_path, extension_index);
         // Copy in post-fix
-        char output_postfix[strlen("-xxcrypted") + 1];
+        char output_postfix[POSTFIX_LENGTH + 1];    // + 1 to account for null terminator
         if(encrypt_flag)
         {
-            strcpy(output_postfix, "-encrypted");
+            strcpy(output_postfix, ENCRYPT_POSTFIX);
         }
         else{
-            strcpy(output_postfix, "-decrypted");
+            strcpy(output_postfix, DECRYPT_POSTFIX);
         }
         strcpy(&new_output_path[extension_index], output_postfix);
         // Copy in extension, if exists
         if(extension_index != strlen(input_path))
         {
-            strcpy(&new_output_path[extension_index + strlen("-xxcrypted")], &input_path[extension_index]);
+            strcpy(&new_output_path[extension_index + POSTFIX_LENGTH], &input_path[extension_index]);
         }
         output_path = new_output_path;
     }
@@ -240,8 +245,6 @@ int main(int argc, char* argv[])
         printf("Key file %s does not exist.\n", key_path);
         return 0;
     }
-
-    printf("output path: %s\n", output_path);
 
     FILE *output_fp = fopen(output_path, "r");
     if(output_fp != NULL)
