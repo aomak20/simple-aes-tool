@@ -210,8 +210,59 @@ int main(int argc, char* argv[])
     }
 
     // Debug prints
-    printf("input: %s\noutput: %s\nkey: %s\nencrypt: %d\ndecrypt: %d\n", input_path, output_path, key_path, encrypt_flag, decrypt_flag);
-    printf("force: %d\nquiet: %d\nverbose: %d\n", force_flag, quiet_flag, verbose_flag);
+    //printf("input: %s\noutput: %s\nkey: %s\nencrypt: %d\ndecrypt: %d\n", input_path, output_path, key_path, encrypt_flag, decrypt_flag);
+    //printf("force: %d\nquiet: %d\nverbose: %d\n", force_flag, quiet_flag, verbose_flag);
+
+    // Validate existence of relevant files
+    FILE *input_fp = fopen(input_path, "r");
+    if(input_fp != NULL)
+    {
+        fclose(input_fp);
+    }
+    else{
+        print_error("Input file does not exist.\n");
+        return 0;
+    }
+
+    FILE *key_fp = fopen(key_path, "r");
+    if(key_fp != NULL)
+    {
+        fclose(key_fp);
+    }
+    else{
+        print_error("Key file does not exist.\n");
+        return 0;
+    }
+
+    FILE *output_fp = fopen(output_path, "r");
+    if(output_fp != NULL)
+    {
+        // File exists, check for overwrite
+        if(!force_flag)
+        {
+            printf("Output file already exists. ");
+            char overwrite_input[1];
+            while(true)
+            {
+                printf("Overwrite? [y/n] ");
+                scanf("%s", overwrite_input);
+                if(strcmp(overwrite_input, "y") == 0)
+                {
+                    break;
+                }
+                else if(strcmp(overwrite_input, "n") == 0)
+                {
+                    printf("Exiting program...\n");
+                    return 0;
+                }
+                printf("Unrecognized input.\n");
+            }
+        }
+    }
+    else{
+        output_fp = fopen(output_path, "w");
+        fclose(output_fp);
+    }
 
     return 0;
 }
