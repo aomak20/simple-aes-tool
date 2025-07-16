@@ -279,5 +279,9 @@ int main(int argc, char* argv[])
     }
     fclose(output_fp);
 
+    // By this point, confirmed that all relevant files are readable/writable
+    
+    //TODO: now, send input, output, and key file paths to some AES function where it can handle opening files, determining round count, etc.
+
     return 0;
 }
