@@ -271,10 +271,13 @@ int main(int argc, char* argv[])
             }
         }
     }
-    else{
-        output_fp = fopen(output_path, "w");
-        fclose(output_fp);
+    output_fp = fopen(output_path, "w");
+    if(output_fp == NULL)
+    {
+        print_error("Could not overwrite output file.\n");
+        return 0;
     }
+    fclose(output_fp);
 
     return 0;
 }
