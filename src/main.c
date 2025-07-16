@@ -9,6 +9,7 @@
 
 #include "aes.h"
 #include "aes_error.h"
+#include "aes_flags.h"
 
 // Constants
 const char *DECRYPT_POSTFIX = "-decrypted";
@@ -57,12 +58,7 @@ int main(int argc, char* argv[])
         return ERR_OK;
     }
 
-    // Flags and vars
-    bool encrypt_flag = false;
-    bool decrypt_flag = false;
-    bool force_flag = false;
-    bool verbose_flag = false;
-    bool quiet_flag = false;
+    // Filepath vars
     char* input_path = NULL;
     char* output_path = NULL;
     char* key_path = NULL;
@@ -115,23 +111,23 @@ int main(int argc, char* argv[])
         }
         else if (strcmp(argv[i], "-e") == 0 || strcmp(argv[i], "--encrypt") == 0)
         {
-            encrypt_flag = true;
+            aes_get_flags()->encrypt= true;
         }
         else if (strcmp(argv[i], "-d") == 0 || strcmp(argv[i], "--decrypt") == 0)
         {
-            decrypt_flag = true;
+            aes_get_flags()->decrypt= true;
         }
         else if (strcmp(argv[i], "-f") == 0 || strcmp(argv[i], "--force") == 0)
         {
-            force_flag = true;
+            aes_get_flags()->force= true;
         }
         else if (strcmp(argv[i], "-b") == 0 || strcmp(argv[i], "--verbose") == 0)
         {
-            verbose_flag = true;
+            aes_get_flags()->verbose= true;
         }
         else if (strcmp(argv[i], "-q") == 0 || strcmp(argv[i], "--quiet") == 0)
         {
-            quiet_flag = true;
+            aes_get_flags()->quiet= true;
         }
         else
         {
@@ -150,13 +146,13 @@ int main(int argc, char* argv[])
     {
         if (strcmp(argv[i], "-q") == 0 || strcmp(argv[i], "--quiet") == 0)
         {
-            quiet_flag = true;
-            verbose_flag = false;
+            aes_get_flags()->quiet = true;
+            aes_get_flags()->verbose = false;
         }
     }
 
     // Validate flags/options
-    if (encrypt_flag ^ decrypt_flag == 0)
+    if ((aes_get_flags()->encrypt ^ aes_get_flags()->decrypt) == 0)
     {
         printf("Must specify either encryption (-e) or decryption (-d), but not both.\n");
         return err_code;
@@ -205,7 +201,7 @@ int main(int argc, char* argv[])
         strncpy(new_output_path, input_path, extension_index);
         // Copy in post-fix
         char output_postfix[POSTFIX_LENGTH + 1];    // + 1 to account for null terminator
-        if (encrypt_flag)
+        if (aes_get_flags()->encrypt)
         {
             strcpy(output_postfix, ENCRYPT_POSTFIX);
         }
@@ -257,7 +253,7 @@ int main(int argc, char* argv[])
     if (output_fp != NULL)
     {
         // File exists, check for overwrite
-        if (!force_flag)
+        if (!aes_get_flags()->force)
         {
             printf("Output file %s already exists. ", output_path);
             char overwrite_input[1];

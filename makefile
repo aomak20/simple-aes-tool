@@ -2,7 +2,7 @@ CC = gcc
 
 CFLAGS = -std=c99 -Wall -Wextra -I./src
 
-SRC = src/main.c src/aes.c src/aes_error.c
+SRC = src/main.c src/aes.c src/aes_error.c src/aes_flags.c
 
 OUT = out/saes.exe
 
