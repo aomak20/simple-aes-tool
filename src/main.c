@@ -39,9 +39,9 @@ int main(int argc, char* argv[])
     // Flags and vars
     bool encrypt_flag = false;
     bool decrypt_flag = false;
-    char* input_path = "";
-    char* output_path = "";
-    char* key_path = "";
+    char* input_path = NULL;
+    char* output_path = NULL;
+    char* key_path = NULL;
 
     // Preliminary check for help and version flags
     for(int i = 1; i < argc; i++)
@@ -112,19 +112,42 @@ int main(int argc, char* argv[])
         print_error("Must specify either encryption (-e) or decryption (-d), but not both.\n");
         return 0;
     }
-    if(strcmp(input_path, "") == 0)
+    if(input_path == NULL)
     {
         print_error("Must specify input path (-in).\n");
         return 0;
     }
-    if(strcmp(key_path, "") == 0)
+    if(key_path == NULL)
     {
         print_error("Must specify key path (-key).\n");
         return 0;
     }
-    if(strcmp(output_path, "") == 0)
+    if(output_path == NULL)
     {
-        printf("do stuff to generate output path from input");
+        int new_output_len = strlen(input_path) + strlen("-xxcrypted");
+
+        char* input_name;
+        char* input_ext;
+        input_name = strtok(input_path, ".");
+        input_ext = strtok(NULL, "");
+
+        char new_output_path[new_output_len];
+        strcpy(new_output_path, input_name);
+        if(encrypt_flag)
+        {
+            strcat(new_output_path, "-encrypted");
+        }
+        else{
+            strcat(new_output_path, "-decrypted");
+        }
+        if(input_ext != NULL)
+        {
+            strcat(new_output_path, ".");
+            strcat(new_output_path, input_ext);
+        }
+
+        output_path = new_output_path;
+        // TODO: This works, but once you leave scope of this if, new_output_path is freed and becomes nonsense
     }
 
     // Debug prints
