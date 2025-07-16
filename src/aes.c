@@ -12,7 +12,7 @@ int find_round_count(char *key_path)
     {
         //TODO replace this with print_error call, involves moving print_error to a util.h file
         printf("ERROR could not open file\n");
-        return -1;
+        return -2;
     }
     fseek(key_fp, 0L, SEEK_END);
     long bytes_count = ftell(key_fp);
@@ -20,13 +20,13 @@ int find_round_count(char *key_path)
 
     switch(bytes_count)
     {
-        case 128L:
+        case 16L:
             return 10;
             break;
-        case 192L:
+        case 24L:
             return 12;
             break;
-        case 256L:
+        case 32L:
             return 14;
             break;
         default:
@@ -38,5 +38,14 @@ void do_aes_ecb(char *input_path, char *output_path, char *key_path)
 {
     printf("Doing AES process in ECB mode with..\nInput: %s\nOutput: %s\nKey: %s\n", input_path, output_path, key_path);
     int round_count = find_round_count(key_path);
+    switch(round_count)
+    {
+        case -1:
+            //TODO replace this with print_error call, involves moving print_error to a util.h file
+            printf("ERROR key length must be 128/192/256 bits\n");
+            return -1;
+        case -2:
+            return -1;
+    }
     printf("Round count: %d\n", round_count);
 }
