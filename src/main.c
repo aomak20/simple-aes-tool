@@ -20,24 +20,31 @@ void print_error(char err_msg[])
 
 void print_usage()
 {
-    printf("saesu: Simple AES Utility\n\n");
+    printf("saesu: Simple AES Utility (version 1.0)\n\n");
 
     printf("A simple AES program that runs in EBC mode. Write more stuff here later.\n\n");
 
-    printf("-d, --decrypt\tDecryption mode\n");
-    printf("-e, --encrypt\tEncryption mode\n");
-    printf("-f, --force\tForce output file overwrite\n");
-    printf("-i, --input\tInput file path\n");
-    printf("-o, --output\tOutput file path\n");
-    printf("-k, --key\tKey file path\n\n");
+    printf("\t-v, --version\t\t\tPrint version\n");
+    printf("\t-h, --help\t\t\tPrint this help message\n");
+    printf("\n");
+    printf("\t-d, --decrypt\t\t\tDecryption mode\n");
+    printf("\t-e, --encrypt\t\t\tEncryption mode\n");
+    printf("\t-i, --input INPUT_FILE\t\tInput file path\n");
+    printf("\t-o, --output OUTPUT_FILE\tOutput file path\n");
+    printf("\t-k, --key KEY_FILE\t\tKey file path\n");
+    printf("\n");
+    printf("\t-f, --force\t\t\tForce output file overwrite\n");
+    printf("\t-b, --verbose\t\t\tUse verbose message printing\n");
+    printf("\t-q, --quiet\t\t\tSuppress messsage printing, overwrites --verbose\n");
+    printf("\n");
 
     printf("Example usage:\n");
-    printf("saesu [-d/-e] -i input_file [-o output_file] -k key_file [-f]\n");
+    printf("\tsaesu [-d/-e] -i input_file [-o output_file] -k key_file [-f]\n");
 }
 
 void print_version()
 {
-    printf("Version message\n");
+    printf("Simple AES Utility version 1.0\n");
 }
 
 int main(int argc, char* argv[])
@@ -52,6 +59,8 @@ int main(int argc, char* argv[])
     bool encrypt_flag = false;
     bool decrypt_flag = false;
     bool force_flag = false;
+    bool verbose_flag = false;
+    bool quiet_flag = false;
     char* input_path = NULL;
     char* output_path = NULL;
     char* key_path = NULL;
@@ -112,6 +121,14 @@ int main(int argc, char* argv[])
         {
             force_flag = true;
         }
+        else if(strcmp(argv[i], "-b") == 0 || strcmp(argv[i], "--verbose") == 0)
+        {
+            verbose_flag = true;
+        }
+        else if(strcmp(argv[i], "-q") == 0 || strcmp(argv[i], "--quiet") == 0)
+        {
+            quiet_flag = true;
+        }
         else{
             int err_msg_len = strlen("Unexpected flag \"") + strlen(argv[i]) + 1;
             char err_msg[err_msg_len];
@@ -120,6 +137,16 @@ int main(int argc, char* argv[])
             strcat(err_msg, "\"");
             print_error(err_msg);
             return 0;
+        }
+    }
+
+    // Special check to make sure --quiet overrides --verbose
+    for(int i = 1; i < argc; i++)
+    {
+        if(strcmp(argv[i], "-q") == 0 || strcmp(argv[i], "--quiet") == 0)
+        {
+            quiet_flag = true;
+            verbose_flag = false;
         }
     }
 
@@ -184,6 +211,7 @@ int main(int argc, char* argv[])
 
     // Debug prints
     printf("input: %s\noutput: %s\nkey: %s\nencrypt: %d\ndecrypt: %d\n", input_path, output_path, key_path, encrypt_flag, decrypt_flag);
+    printf("force: %d\nquiet: %d\nverbose: %d\n", force_flag, quiet_flag, verbose_flag);
 
     return 0;
 }
