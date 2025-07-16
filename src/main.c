@@ -182,13 +182,23 @@ int main(int argc, char* argv[])
 
     // Allocate string for a possible newly constructed output_path
     int new_output_len = strlen(input_path) + strlen("-xxcrypted");
-
-    char* input_name;
-    char* input_ext;
-    input_name = strtok(input_path, ".");
-    input_ext = strtok(NULL, "");
-
     char new_output_path[new_output_len];
+
+    // Get the string of input before and after the .
+    int extension_index;
+    for(extension_index = 0; extension_index < strlen(input_path); extension_index++)
+    {
+        if(input_path[extension_index] == '.')
+        {
+            break;
+        }
+    }
+    char input_name_str[extension_index];
+    strncpy(input_name_str, input_path, extension_index);
+    char input_name_ext[strlen(input_path) - extension_index];
+    strcpy(input_name_ext, &input_path[extension_index]);
+    char *input_name = input_name_str;
+    char *input_ext = input_name_ext;
 
     if(output_path == NULL)
     {
@@ -202,7 +212,6 @@ int main(int argc, char* argv[])
         }
         if(input_ext != NULL)
         {
-            strcat(new_output_path, ".");
             strcat(new_output_path, input_ext);
         }
 
@@ -210,8 +219,8 @@ int main(int argc, char* argv[])
     }
 
     // Debug prints
-    //printf("input: %s\noutput: %s\nkey: %s\nencrypt: %d\ndecrypt: %d\n", input_path, output_path, key_path, encrypt_flag, decrypt_flag);
-    //printf("force: %d\nquiet: %d\nverbose: %d\n", force_flag, quiet_flag, verbose_flag);
+    printf("input: %s\noutput: %s\nkey: %s\nencrypt: %d\ndecrypt: %d\n", input_path, output_path, key_path, encrypt_flag, decrypt_flag);
+    printf("force: %d\nquiet: %d\nverbose: %d\n", force_flag, quiet_flag, verbose_flag);
 
     // Validate existence of relevant files
     FILE *input_fp = fopen(input_path, "r");
@@ -220,7 +229,7 @@ int main(int argc, char* argv[])
         fclose(input_fp);
     }
     else{
-        print_error("Input file does not exist.\n");
+        printf("Input file %s does not exist.\n", input_path);
         return 0;
     }
 
@@ -230,7 +239,7 @@ int main(int argc, char* argv[])
         fclose(key_fp);
     }
     else{
-        print_error("Key file does not exist.\n");
+        printf("Key file %s does not exist.\n", key_path);
         return 0;
     }
 
@@ -240,7 +249,7 @@ int main(int argc, char* argv[])
         // File exists, check for overwrite
         if(!force_flag)
         {
-            printf("Output file already exists. ");
+            printf("Output file %s already exists. ", output_path);
             char overwrite_input[1];
             while(true)
             {
