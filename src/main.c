@@ -22,7 +22,7 @@ void print_help()
 
 void print_usage()
 {
-    printf("saesu: Simple AES Utility (version 1.0)\n\n");
+    printf("saes: Simple AES Utility (version 1.0)\n\n");
 
     printf("A simple AES program that runs in EBC mode. Write more stuff here later.\n\n");
 
@@ -41,7 +41,7 @@ void print_usage()
     printf("\n");
 
     printf("Example usage:\n");
-    printf("\tsaesu [-d/-e] -i input_file [-o output_file] -k key_file [-f]\n");
+    printf("\tsaes [-d/-e] -i input_file [-o output_file] -k key_file [-f]\n");
 }
 
 void print_version()
