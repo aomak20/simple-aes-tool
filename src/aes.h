@@ -6,6 +6,6 @@
 #ifndef AES_HEADER
 #define AES_HEADER
 
-void do_aes_ecb(char *input_path, char *output_path, char *key_path);
+int do_aes_ecb(char *input_path, char *output_path, char *key_path);
 
 #endif

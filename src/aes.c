@@ -5,14 +5,14 @@
 
 #include <stdio.h>
 
+#include "aes_error.h"
+
 int find_round_count(char *key_path)
 {
     FILE *key_fp = fopen(key_path, "rb");
     if(key_fp == NULL)
     {
-        //TODO replace this with print_error call, involves moving print_error to a util.h file
-        printf("ERROR could not open file\n");
-        return -2;
+        return ERR_FILE_NOT_OPEN;
     }
     fseek(key_fp, 0L, SEEK_END);
     long bytes_count = ftell(key_fp);
@@ -30,23 +30,19 @@ int find_round_count(char *key_path)
             return 14;
             break;
         default:
-            return -1;
+            return ERR_KEY_INVALID_LEN;
     }
 }
 
-void do_aes_ecb(char *input_path, char *output_path, char *key_path)
+int do_aes_ecb(char *input_path, char *output_path, char *key_path)
 {
     printf("Doing AES process in ECB mode with..\nInput: %s\nOutput: %s\nKey: %s\n", input_path, output_path, key_path);
     int round_count = find_round_count(key_path);
-    //TODO remember how to do better error handling in C
-    switch(round_count)
+    if(round_count < 0)
     {
-        case -1:
-            //TODO replace this with print_error call, involves moving print_error to a util.h file
-            printf("ERROR key length must be 128/192/256 bits\n");
-            break;
-        case -2:
-            break;
+        return round_count;
     }
     printf("Round count: %d\n", round_count);
+
+    return 0;
 }

@@ -8,6 +8,7 @@
 #include <string.h>
 
 #include "aes.h"
+#include "aes_error.h"
 
 // Constants
 const char *DECRYPT_POSTFIX = "-decrypted";
@@ -17,12 +18,6 @@ const int POSTFIX_LENGTH = strlen("-xxcrypted");
 void print_help()
 {
     printf("For detailed usage, use -h or --help\n");
-}
-
-void print_error(char err_msg[])
-{
-    printf("ERROR: %s\n", err_msg);
-    print_help();
 }
 
 void print_usage()
@@ -59,7 +54,7 @@ int main(int argc, char* argv[])
     if(argc == 1)
     {
         print_help();
-        return 0;
+        return ERR_OK;
     }
 
     // Flags and vars
@@ -72,18 +67,20 @@ int main(int argc, char* argv[])
     char* output_path = NULL;
     char* key_path = NULL;
 
+    int err_code = ERR_OK;
+
     // Preliminary check for help and version flags
     for(int i = 1; i < argc; i++)
     {
         if(strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0)
         {
             print_usage();
-            return 0;
+            return err_code;
         }
         else if(strcmp(argv[i], "-v") == 0 || strcmp(argv[i], "--version") == 0)
         {
             print_version();
-            return 0;
+            return err_code;
         }
     }
 
@@ -93,8 +90,8 @@ int main(int argc, char* argv[])
         {
             if(i == argc - 1)
             {
-                print_error("Expected input file path");
-                return 0;
+                printf("Expected input file path.\n");
+                return err_code;
             }
             input_path = argv[++i];
         }
@@ -102,8 +99,8 @@ int main(int argc, char* argv[])
         {
             if(i == argc - 1)
             {
-                print_error("Expected output file path");
-                return 0;
+                printf("Expected output file path.\n");
+                return err_code;
             }
             output_path = argv[++i];
         }
@@ -111,8 +108,8 @@ int main(int argc, char* argv[])
         {
             if(i == argc - 1)
             {
-                print_error("Expected key file path");
-                return 0;
+                printf("Expected key file path.\n");
+                return err_code;
             }
             key_path = argv[++i];
         }
@@ -137,13 +134,13 @@ int main(int argc, char* argv[])
             quiet_flag = true;
         }
         else{
-            int err_msg_len = strlen("Unexpected flag \"") + strlen(argv[i]) + 1;
+            int err_msg_len = strlen("Unexpected flag \"") + strlen(argv[i]) + 2;
             char err_msg[err_msg_len];
             strcpy(err_msg, "Unexpected flag \"");
             strcat(err_msg, argv[i]);
-            strcat(err_msg, "\"");
-            print_error(err_msg);
-            return 0;
+            strcat(err_msg, "\".");
+            printf("%s\n", err_msg);
+            return err_code;
         }
     }
 
@@ -160,30 +157,30 @@ int main(int argc, char* argv[])
     // Validate flags/options
     if(encrypt_flag ^ decrypt_flag == 0)
     {
-        print_error("Must specify either encryption (-e) or decryption (-d), but not both.\n");
-        return 0;
+        printf("Must specify either encryption (-e) or decryption (-d), but not both.\n");
+        return err_code;
     }
     if(input_path == NULL)
     {
-        print_error("Must specify input path (-i).\n");
-        return 0;
+        printf("Must specify input path (-i).\n");
+        return err_code;
     }
     if(key_path == NULL)
     {
-        print_error("Must specify key path (-k).\n");
-        return 0;
+        printf("Must specify key path (-k).\n");
+        return err_code;
     }
     if(output_path != NULL)
     {
         if(strcmp(input_path, output_path) == 0)
         {
-            print_error("Output file cannot be same as input file.\n");
-            return 0;
+            printf("Output file cannot be same as input file.\n");
+            return err_code;
         }
         if(strcmp(key_path, output_path) == 0)
         {
-            print_error("Output file cannot be same as key file.\n");
-            return 0;
+            printf("Output file cannot be same as key file.\n");
+            return err_code;
         }
     }
 
@@ -234,8 +231,10 @@ int main(int argc, char* argv[])
         fclose(input_fp);
     }
     else{
-        printf("Input file %s does not exist.\n", input_path);
-        return 0;
+        //printf("Input file %s does not exist.\n", input_path);
+        err_code = ERR_FILE_NOT_OPEN;
+        aes_print_err(err_code);
+        return err_code;
     }
 
     FILE *key_fp = fopen(key_path, "r");
@@ -244,8 +243,10 @@ int main(int argc, char* argv[])
         fclose(key_fp);
     }
     else{
-        printf("Key file %s does not exist.\n", key_path);
-        return 0;
+        //printf("Key file %s does not exist.\n", key_path);
+        err_code = ERR_FILE_NOT_OPEN;
+        aes_print_err(err_code);
+        return err_code;
     }
 
     FILE *output_fp = fopen(output_path, "r");
@@ -267,7 +268,7 @@ int main(int argc, char* argv[])
                 else if(strcmp(overwrite_input, "n") == 0)
                 {
                     printf("Exiting program...\n");
-                    return 0;
+                    return err_code;
                 }
                 printf("Unrecognized input.\n");
             }
@@ -276,15 +277,20 @@ int main(int argc, char* argv[])
     output_fp = fopen(output_path, "w");
     if(output_fp == NULL)
     {
-        print_error("Could not overwrite output file.\n");
-        return 0;
+        //print_error("Could not overwrite output file.\n");
+        err_code = ERR_FILE_NOT_OPEN;
+        aes_print_err(err_code);
+        return err_code;
     }
     fclose(output_fp);
 
     // By this point, confirmed that all relevant files are readable/writable
     
-    //TODO: now, send input, output, and key file paths to some AES function where it can handle opening files, determining round count, etc.
-    do_aes_ecb(input_path, output_path, key_path);
+    err_code = do_aes_ecb(input_path, output_path, key_path);
+    if(err_code != ERR_OK)
+    {
+        aes_print_err(err_code);
+    }
     
-    return 0;
+    return err_code;
 }
