@@ -51,7 +51,7 @@ void print_version()
 
 int main(int argc, char* argv[])
 {
-    if(argc == 1)
+    if (argc == 1)
     {
         print_help();
         return ERR_OK;
@@ -70,66 +70,66 @@ int main(int argc, char* argv[])
     int err_code = ERR_OK;
 
     // Preliminary check for help and version flags
-    for(int i = 1; i < argc; i++)
+    for (int i = 1; i < argc; i++)
     {
-        if(strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0)
+        if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0)
         {
             print_usage();
             return err_code;
         }
-        else if(strcmp(argv[i], "-v") == 0 || strcmp(argv[i], "--version") == 0)
+        else if (strcmp(argv[i], "-v") == 0 || strcmp(argv[i], "--version") == 0)
         {
             print_version();
             return err_code;
         }
     }
 
-    for(int i = 1; i < argc; i++)
+    for (int i = 1; i < argc; i++)
     {
-        if(strcmp(argv[i], "-i") == 0 || strcmp(argv[i], "--input") == 0)
+        if (strcmp(argv[i], "-i") == 0 || strcmp(argv[i], "--input") == 0)
         {
-            if(i == argc - 1)
+            if (i == argc - 1)
             {
                 printf("Expected input file path.\n");
                 return err_code;
             }
             input_path = argv[++i];
         }
-        else if(strcmp(argv[i], "-o") == 0 || strcmp(argv[i], "--output") == 0)
+        else if (strcmp(argv[i], "-o") == 0 || strcmp(argv[i], "--output") == 0)
         {
-            if(i == argc - 1)
+            if (i == argc - 1)
             {
                 printf("Expected output file path.\n");
                 return err_code;
             }
             output_path = argv[++i];
         }
-        else if(strcmp(argv[i], "-k") == 0 || strcmp(argv[i], "--key") == 0)
+        else if (strcmp(argv[i], "-k") == 0 || strcmp(argv[i], "--key") == 0)
         {
-            if(i == argc - 1)
+            if (i == argc - 1)
             {
                 printf("Expected key file path.\n");
                 return err_code;
             }
             key_path = argv[++i];
         }
-        else if(strcmp(argv[i], "-e") == 0 || strcmp(argv[i], "--encrypt") == 0)
+        else if (strcmp(argv[i], "-e") == 0 || strcmp(argv[i], "--encrypt") == 0)
         {
             encrypt_flag = true;
         }
-        else if(strcmp(argv[i], "-d") == 0 || strcmp(argv[i], "--decrypt") == 0)
+        else if (strcmp(argv[i], "-d") == 0 || strcmp(argv[i], "--decrypt") == 0)
         {
             decrypt_flag = true;
         }
-        else if(strcmp(argv[i], "-f") == 0 || strcmp(argv[i], "--force") == 0)
+        else if (strcmp(argv[i], "-f") == 0 || strcmp(argv[i], "--force") == 0)
         {
             force_flag = true;
         }
-        else if(strcmp(argv[i], "-b") == 0 || strcmp(argv[i], "--verbose") == 0)
+        else if (strcmp(argv[i], "-b") == 0 || strcmp(argv[i], "--verbose") == 0)
         {
             verbose_flag = true;
         }
-        else if(strcmp(argv[i], "-q") == 0 || strcmp(argv[i], "--quiet") == 0)
+        else if (strcmp(argv[i], "-q") == 0 || strcmp(argv[i], "--quiet") == 0)
         {
             quiet_flag = true;
         }
@@ -146,9 +146,9 @@ int main(int argc, char* argv[])
     }
 
     // Special check to make sure --quiet overrides --verbose
-    for(int i = 1; i < argc; i++)
+    for (int i = 1; i < argc; i++)
     {
-        if(strcmp(argv[i], "-q") == 0 || strcmp(argv[i], "--quiet") == 0)
+        if (strcmp(argv[i], "-q") == 0 || strcmp(argv[i], "--quiet") == 0)
         {
             quiet_flag = true;
             verbose_flag = false;
@@ -156,29 +156,29 @@ int main(int argc, char* argv[])
     }
 
     // Validate flags/options
-    if(encrypt_flag ^ decrypt_flag == 0)
+    if (encrypt_flag ^ decrypt_flag == 0)
     {
         printf("Must specify either encryption (-e) or decryption (-d), but not both.\n");
         return err_code;
     }
-    if(input_path == NULL)
+    if (input_path == NULL)
     {
         printf("Must specify input path (-i).\n");
         return err_code;
     }
-    if(key_path == NULL)
+    if (key_path == NULL)
     {
         printf("Must specify key path (-k).\n");
         return err_code;
     }
-    if(output_path != NULL)
+    if (output_path != NULL)
     {
-        if(strcmp(input_path, output_path) == 0)
+        if (strcmp(input_path, output_path) == 0)
         {
             printf("Output file cannot be same as input file.\n");
             return err_code;
         }
-        if(strcmp(key_path, output_path) == 0)
+        if (strcmp(key_path, output_path) == 0)
         {
             printf("Output file cannot be same as key file.\n");
             return err_code;
@@ -189,13 +189,13 @@ int main(int argc, char* argv[])
     int new_output_len = strlen(input_path) + POSTFIX_LENGTH;
     char new_output_path[new_output_len];
 
-    if(output_path == NULL)
+    if (output_path == NULL)
     {
         // Get the string of input before and after the .
         int extension_index;
-        for(extension_index = 0; extension_index < strlen(input_path); extension_index++)
+        for (extension_index = 0; extension_index < strlen(input_path); extension_index++)
         {
-            if(input_path[extension_index] == '.')
+            if (input_path[extension_index] == '.')
             {
                 break;
             }
@@ -205,7 +205,7 @@ int main(int argc, char* argv[])
         strncpy(new_output_path, input_path, extension_index);
         // Copy in post-fix
         char output_postfix[POSTFIX_LENGTH + 1];    // + 1 to account for null terminator
-        if(encrypt_flag)
+        if (encrypt_flag)
         {
             strcpy(output_postfix, ENCRYPT_POSTFIX);
         }
@@ -215,7 +215,7 @@ int main(int argc, char* argv[])
         }
         strcpy(&new_output_path[extension_index], output_postfix);
         // Copy in extension, if exists
-        if(extension_index != strlen(input_path))
+        if (extension_index != strlen(input_path))
         {
             strcpy(&new_output_path[extension_index + POSTFIX_LENGTH], &input_path[extension_index]);
         }
@@ -228,7 +228,7 @@ int main(int argc, char* argv[])
 
     // Validate existence of relevant files
     FILE *input_fp = fopen(input_path, "r");
-    if(input_fp != NULL)
+    if (input_fp != NULL)
     {
         fclose(input_fp);
     }
@@ -241,7 +241,7 @@ int main(int argc, char* argv[])
     }
 
     FILE *key_fp = fopen(key_path, "r");
-    if(key_fp != NULL)
+    if (key_fp != NULL)
     {
         fclose(key_fp);
     }
@@ -254,22 +254,22 @@ int main(int argc, char* argv[])
     }
 
     FILE *output_fp = fopen(output_path, "r");
-    if(output_fp != NULL)
+    if (output_fp != NULL)
     {
         // File exists, check for overwrite
-        if(!force_flag)
+        if (!force_flag)
         {
             printf("Output file %s already exists. ", output_path);
             char overwrite_input[1];
-            while(true)
+            while (true)
             {
                 printf("Overwrite? [y/n] ");
                 scanf("%s", overwrite_input);
-                if(strcmp(overwrite_input, "y") == 0)
+                if (strcmp(overwrite_input, "y") == 0)
                 {
                     break;
                 }
-                else if(strcmp(overwrite_input, "n") == 0)
+                else if (strcmp(overwrite_input, "n") == 0)
                 {
                     printf("Exiting program...\n");
                     return err_code;
@@ -279,7 +279,7 @@ int main(int argc, char* argv[])
         }
     }
     output_fp = fopen(output_path, "w");
-    if(output_fp == NULL)
+    if (output_fp == NULL)
     {
         //print_error("Could not overwrite output file.\n");
         err_code = ERR_FILE_NOT_OPEN;
@@ -291,7 +291,7 @@ int main(int argc, char* argv[])
     // By this point, confirmed that all relevant files are readable/writable
     
     err_code = do_aes_ecb(input_path, output_path, key_path);
-    if(err_code != ERR_OK)
+    if (err_code != ERR_OK)
     {
         aes_print_err(err_code);
     }
