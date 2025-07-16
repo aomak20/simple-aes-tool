@@ -24,7 +24,7 @@ void print_help()
 
 void print_usage()
 {
-    printf("saes: Simple AES Utility (version 1.0)\n\n");
+    printf("saes: Simple AES Tool\n\n");
 
     printf("A simple AES program that runs in EBC mode. Write more stuff here later.\n\n");
 
@@ -48,7 +48,7 @@ void print_usage()
 
 void print_version()
 {
-    printf("Simple AES Utility version 1.0\n");
+    printf("Simple AES Tool version 1.0\n");
 }
 
 int main(int argc, char* argv[])
