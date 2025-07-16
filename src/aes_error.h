@@ -6,6 +6,8 @@
 #ifndef AES_ERROR_HEADER
 #define AES_ERROR_HEADER
 
+extern const char *AES_ERROR_PREFIX;
+
 typedef enum
 {
     ERR_OK = 0,
@@ -15,5 +17,7 @@ typedef enum
 } AES_Error;
 
 void aes_print_err(AES_Error err_code);
+
+void aes_pferror(const char *fmt, ...);
 
 #endif

@@ -4,27 +4,40 @@
 // //
 
 #include <stdio.h>
+#include <stdarg.h>
 
 #include "aes_error.h"
 
-void aes_print_err(AES_Error err_code)
+const char *AES_ERROR_PREFIX = "ERROR: ";
+
+void aes_perror(AES_Error err_code)
 {
     if(err_code == ERR_OK)
     {
         return;
     }
 
-    printf("ERROR: ");
+    fprintf(stderr, "ERROR: ");
     switch(err_code)
     {
         case ERR_FILE_NOT_OPEN:
-            printf("File could not be opened, or does not exist.\n");
+            fprintf(stderr, "File could not be opened, or does not exist.\n");
             break;
         case ERR_FILE_NOT_WRITE:
-            printf("Could not overwrite file.\n");
+            fprintf(stderr, "Could not overwrite file.\n");
             break;
         case ERR_KEY_INVALID_LEN:
-            printf("Key file must be 128/192/256 bits.\n");
+            fprintf(stderr, "Key file must be 128/192/256 bits.\n");
             break;
     }
+}
+
+void aes_pferror(const char *fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    fprintf(stderr, "%s", AES_ERROR_PREFIX);
+    vfprintf(stderr, fmt, args);
+    fprintf(stderr, "\n");
+    va_end(args);
 }
