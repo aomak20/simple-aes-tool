@@ -8,5 +8,3 @@
 
 #include "aes_error.h"
 
-const char *AES_ERROR_PREFIX = "ERROR: ";
-
