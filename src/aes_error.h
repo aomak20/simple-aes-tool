@@ -16,8 +16,5 @@ typedef enum
     ERR_KEY_INVALID_LEN = -3
 } AES_Error;
 
-void aes_print_err(AES_Error err_code);
-
-void aes_pferror(const char *fmt, ...);
-
 #endif
+
