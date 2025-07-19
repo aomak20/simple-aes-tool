@@ -48,13 +48,13 @@ int find_round_count(char *key_path)
 
 int do_aes_ecb(char *input_path, char *output_path, char *key_path)
 {
-    aes_printf(stderr, "Doing AES process in ECB mode with..\nInput: %s\nOutput: %s\nKey: %s\n", input_path, output_path, key_path);
+    aes_printf("Doing AES process in ECB mode with..\nInput: %s\nOutput: %s\nKey: %s\n", input_path, output_path, key_path);
     int round_count = find_round_count(key_path);
     if(round_count < 0)
     {
         return round_count;
     }
-    aes_printf_verbose(stderr, "Round count: %d\n", round_count);
+    aes_printf_verbose("Round count: %d\n", round_count);
 
     return ERR_OK;
 }
