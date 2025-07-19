@@ -10,6 +10,7 @@
 
 #include "aes_error.h"
 #include "aes_flags.h"
+#include "aes_print.h"
 #include "aes.h"
 
 // Constants
@@ -87,7 +88,7 @@ int main(int argc, char* argv[])
         {
             if (i == argc - 1)
             {
-                aes_pferror("Expected input file path.");
+                aes_printf_error("Expected input file path.\n");
                 return err_code;
             }
             input_path = argv[++i];
@@ -96,7 +97,7 @@ int main(int argc, char* argv[])
         {
             if (i == argc - 1)
             {
-                aes_pferror("Expected output file path.");
+                aes_printf_error("Expected output file path.\n");
                 return err_code;
             }
             output_path = argv[++i];
@@ -105,7 +106,7 @@ int main(int argc, char* argv[])
         {
             if (i == argc - 1)
             {
-                aes_pferror("Expected key file path.");
+                aes_printf_error("Expected key file path.\n");
                 return err_code;
             }
             key_path = argv[++i];
@@ -132,7 +133,7 @@ int main(int argc, char* argv[])
         }
         else
         {
-            aes_pferror("Unexpected flag \"%s\".", argv[i]);
+            aes_printf_error("Unexpected flag \"%s\".\n", argv[i]);
             return err_code;
         }
     }
@@ -150,29 +151,29 @@ int main(int argc, char* argv[])
     // Validate flags/options
     if ((aes_get_flags()->encrypt ^ aes_get_flags()->decrypt) == 0)
     {
-        aes_pferror("Must specify either encryption (-e) or decryption (-d), but not both.");
+        aes_printf_error("Must specify either encryption (-e) or decryption (-d), but not both.\n");
         return err_code;
     }
     if (input_path == NULL)
     {
-        aes_pferror("Must specify input path (-i).");
+        aes_printf_error("Must specify input path (-i).\n");
         return err_code;
     }
     if (key_path == NULL)
     {
-        aes_pferror("Must specify key path (-k).");
+        aes_printf_error("Must specify key path (-k).\n");
         return err_code;
     }
     if (output_path != NULL)
     {
         if (strcmp(input_path, output_path) == 0)
         {
-            aes_pferror("Output file cannot be same as input file.");
+            aes_printf_error("Output file cannot be same as input file.\n");
             return err_code;
         }
         if (strcmp(key_path, output_path) == 0)
         {
-            aes_pferror("Output file cannot be same as key file.");
+            aes_printf_error("Output file cannot be same as key file.\n");
             return err_code;
         }
     }
@@ -228,11 +229,11 @@ int main(int argc, char* argv[])
     {
         if (errno == ENOENT)
         {
-            aes_pferror("Input file %s does not exist.", input_path);
+            aes_printf_error("Input file %s does not exist.\n", input_path);
         }
         else
         {
-            aes_pferror("Input file %s could not be opened.", input_path);
+            aes_printf_error("Input file %s could not be opened.\n", input_path);
         }
         return ERR_FILE_NOT_OPEN;
     }
@@ -246,11 +247,11 @@ int main(int argc, char* argv[])
     {
         if (errno == ENOENT)
         {
-            aes_pferror("Key file %s does not exist.", key_path);
+            aes_printf_error("Key file %s does not exist.\n", key_path);
         }
         else
         {
-            aes_pferror("Key file %s could not be opened.", key_path);
+            aes_printf_error("Key file %s could not be opened.\n", key_path);
         }
         return ERR_FILE_NOT_OPEN;
     }
@@ -283,7 +284,7 @@ int main(int argc, char* argv[])
     output_fp = fopen(output_path, "w");
     if (output_fp == NULL)
     {
-        aes_pferror("Output file %s could not be overwritten.", output_path);
+        aes_printf_error("Output file %s could not be overwritten.\n", output_path);
         return ERR_FILE_NOT_OPEN;
     }
     fclose(output_fp);

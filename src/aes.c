@@ -7,6 +7,7 @@
 #include <stdio.h>
 
 #include "aes_error.h"
+#include "aes_print.h"
 
 int find_round_count(char *key_path)
 {
@@ -15,11 +16,11 @@ int find_round_count(char *key_path)
     {
         if (errno == ENOENT)
         {
-            aes_pferror("Key file %s does not exist.", key_path);
+            aes_printf_error("Key file %s does not exist.\n", key_path);
         }
         else
         {
-            aes_pferror("Key file %s could not be opened.", key_path);
+            aes_printf_error("Key file %s could not be opened.\n", key_path);
         }
         return ERR_FILE_NOT_OPEN;
     }
@@ -40,20 +41,20 @@ int find_round_count(char *key_path)
             return 14;
             break;
         default:
-            aes_pferror("Key file must be 16/24/32 bytes long, but is actually %d bytes.", bytes_count);
+            aes_printf_error("Key file must be 16/24/32 bytes long, but is actually %d bytes.\n", bytes_count);
             return ERR_KEY_INVALID_LEN;
     }
 }
 
 int do_aes_ecb(char *input_path, char *output_path, char *key_path)
 {
-    fprintf(stderr, "Doing AES process in ECB mode with..\nInput: %s\nOutput: %s\nKey: %s\n", input_path, output_path, key_path);
+    aes_printf(stderr, "Doing AES process in ECB mode with..\nInput: %s\nOutput: %s\nKey: %s\n", input_path, output_path, key_path);
     int round_count = find_round_count(key_path);
     if(round_count < 0)
     {
         return round_count;
     }
-    fprintf(stderr, "Round count: %d\n", round_count);
+    aes_printf_verbose(stderr, "Round count: %d\n", round_count);
 
     return ERR_OK;
 }
